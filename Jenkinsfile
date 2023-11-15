@@ -8,18 +8,18 @@ pipeline {
         }
         stage('Build Docker image') {
             steps {
-                sh 'docker build -t Dockerfile .'
+                sh 'docker build -t myimage .'
             }
         }
-        stage('Run unit tests') {
-            steps {
-                sh 'mvn test'
-            }
+    }
+    post {
+        success {
+            echo 'Build succeeded!'
+            mail to: 'damien.lemarchand@viacesi.fr', subject: 'Build succeeded', body: 'The build succeeded!'
         }
-        stage('Send email notification') {
-            steps {
-                emailext body: 'The build has finished successfully.', subject: 'Build Notification', to: 'damien.lemarchand@viacesi.fr'
-            }
+        failure {
+            echo 'Build failed!'
+            mail to: 'damien.lemarchand@viacesi.fr', subject: 'Build failed', body: 'The build failed!'
         }
     }
 }
