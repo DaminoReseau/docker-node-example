@@ -1,29 +1,25 @@
 pipeline {
-  agent any
-  stages {
-    stage('Tests') {
-      steps {
-        echo 'Démarrage du stage test'
-        sleep 5
-        echo 'Fin du step stage'
-      }
+    agent any
+    stages {
+        stage('Clone repository') {
+            steps {
+                git 'https://github.com/DaminoReseau/docker-node-example.git'
+            }
+        }
+        stage('Build Docker image') {
+            steps {
+                sh 'docker build -t myimage .'
+            }
+        }
+        stage('Run unit tests') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage('Send email notification') {
+            steps {
+                emailext body: 'The build has finished successfully.', subject: 'Build Notification', to: 'damien.lemarchand@viacesi.fr'
+            }
+        }
     }
-
-    stage('Build') {
-      steps {
-        echo 'start build stage'
-        sleep 5
-        echo 'End build stage'
-      }
-    }
-
-    stage('Deploy') {
-      steps {
-        echo 'Start deploy stage'
-        sleep 5
-        echo 'End deploy stage'
-      }
-    }
-
-  }
 }
