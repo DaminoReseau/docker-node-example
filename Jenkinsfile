@@ -4,7 +4,7 @@ pipeline {
     stage('Tests') {
       steps {
         echo 'Démarrage du stage test'
-        sleep 20
+        sleep 5
         echo 'Fin du step stage'
       }
     }
@@ -12,7 +12,7 @@ pipeline {
     stage('Build') {
       steps {
         echo 'start build stage'
-        sleep 20
+        sleep 5
         echo 'End build stage'
       }
     }
@@ -20,7 +20,7 @@ pipeline {
     stage('Deploy') {
       steps {
         echo 'Start deploy stage'
-        sleep 20
+        sleep 5
         echo 'End deploy stage'
       }
     }
