@@ -10,7 +10,7 @@ pipeline {
     stage('Construire l\'image Docker') {
       steps {
         script {
-          docker.build('test-image-jenkins')
+          docker.build('image-jenkins')
         }
 
       }
