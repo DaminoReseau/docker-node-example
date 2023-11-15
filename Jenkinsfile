@@ -8,7 +8,7 @@ pipeline {
         }
         stage('Build Docker image') {
             steps {
-                sh 'docker build -t myimage .'
+                sh 'docker build -t Dockerfile .'
             }
         }
         stage('Run unit tests') {
