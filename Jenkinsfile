@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Tests') {
       steps {
-        echo 'Démarrage du stage test'
+        echo 'DÃ©marrage du stage test'
         sleep 20
         echo 'Fin du step stage'
       }
