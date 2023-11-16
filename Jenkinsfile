@@ -1,4 +1,4 @@
-pipeline {
+ipipeline {
   agent any
   stages {
     stage('Cloner le dépôt') {
@@ -19,7 +19,7 @@ pipeline {
             steps {
                 script {
                     // Analyse de sécurité avec Trivy dans un conteneur Docker distinct
-                    def trivyOutput = sh(script: 'docker run --rm -v $PWD:/work -w /work aquasec/trivy mon_image:latest', returnStdout: true).trim()
+                    def trivyOutput = sh(script: 'docker run --rm -v $PWD:/work -w /work aquasec/trivy image-jenkins', returnStdout: true).trim()
 
                     // Sauvegarder la sortie de Trivy dans un fichier de log
                     writeFile file: 'trivy_scan.log', text: trivyOutput
