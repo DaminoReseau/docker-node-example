@@ -1,70 +1,23 @@
-FROM node:20.6.1-bookworm-slim AS assets
-LABEL maintainer="Nick Janetakis <nick.janetakis@gmail.com>"
+FROM ubuntu:latest
 
-WORKDIR /app/frontend
+# Importation du certificat et de la clé privée
+#ADD fullchain.pem /etc/ssl/certs/
+#ADD privkey.pem /etc/ssl/private/
 
-ARG UID=1000
-ARG GID=1000
+# Mise a jour du systeme + Installation paquets
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install -y apache2 apache2-utils jq wget
+#RUN apt-get install -y tcpdump
 
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends build-essential \
-  && rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man \
-  && apt-get clean \
-  && groupmod -g "${GID}" node && usermod -u "${UID}" -g "${GID}" node \
-  && mkdir -p /node_modules && chown node:node -R /node_modules /app
+# Activation des modules apache2
+RUN a2enmod proxy
+RUN a2enmod proxy_http
+RUN a2enmod ssl
+RUN a2enmod rewrite
 
-USER node
+# Création du dossier de certificat
+RUN mkdir /certs
 
-COPY --chown=node:node frontend/package.json frontend/*yarn* ./
-
-RUN yarn install && yarn cache clean
-
-ARG NODE_ENV="production"
-ENV NODE_ENV="${NODE_ENV}" \
-    PATH="${PATH}:/node_modules/.bin" \
-    USER="node"
-
-COPY --chown=node:node . ..
-
-RUN if [ "${NODE_ENV}" != "development" ]; then \
-  ../run yarn:build:js && ../run yarn:build:css; else mkdir -p /app/public; fi
-
-CMD ["bash"]
-
-###############################################################################
-
-FROM node:20.6.1-bookworm-slim AS app
-LABEL maintainer="Nick Janetakis <nick.janetakis@gmail.com>"
-
-WORKDIR /app/backend
-
-ARG UID=1000
-ARG GID=1000
-
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends build-essential curl libpq-dev \
-  && rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man \
-  && apt-get clean \
-  && groupmod -g "${GID}" node && usermod -u "${UID}" -g "${GID}" node \
-  && mkdir -p /node_modules && chown node:node -R /node_modules /app
-
-USER node
-
-COPY --chown=node:node backend/package.json backend/*yarn* ./
-
-RUN yarn install && yarn cache clean
-
-ARG NODE_ENV="production"
-ENV NODE_ENV="${NODE_ENV}" \
-    PATH="${PATH}:/node_modules/.bin" \
-    USER="node"
-
-COPY --chown=node:node --from=assets /app/public /public
-COPY --chown=node:node backend/ ./
-COPY --chown=node:node bin/ /app/bin
-
-ENTRYPOINT ["/app/bin/docker-entrypoint-web"]
-
-EXPOSE 8000
-
-CMD ["yarn", "watch-production"]
+# Permet de faire tourner en boucle apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
