@@ -27,16 +27,7 @@ pipeline {
                     // Afficher le résultat dans la console Jenkins
                     echo "Résultat de l'analyse Trivy :"
                     echo trivyOutput
-                  // URL du Webhook Discord
-                    def discordWebhookUrl = "https://discord.com/api/webhooks/1174339385563566151/E7vGSpxIZx-A18L59GnJQ9iusE5_qxYgXmsGsugmH_dBb37LGaybeso6p4fXOH4IiJ6p" // Remplacez ceci par votre URL de webhook Discord
-
-                    // Envoyer une notification Discord en fonction du résultat
-                    if (trivyOutput.contains('CRITICAL')) {
-                        discordSend(description: "Le build a réussi !", result: "SUCCESS", title: env.JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1174339385563566151/E7vGSpxIZx-A18L59GnJQ9iusE5_qxYgXmsGsugmH_dBb37LGaybeso6p4fXOH4IiJ6p")
-                      }else {
-                        sh "curl -X POST -H 'Content-Type: application/json' --data '{\"content\": \"Succès de l'analyse Trivy : Aucune vulnérabilité critique détectée.\"}' $discordWebhookUrl"
-                        echo 'Aucune vulnérabilité critique détectée. Continuation du déploiement.'
-                    }
+                    
                       }
                     // Éventuellement, ajouter une condition pour stopper le déploiement si des vulnérabilités critiques sont détectées
                     if (trivyOutput.contains('CRITICAL')) {
