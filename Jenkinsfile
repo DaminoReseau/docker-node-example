@@ -32,9 +32,8 @@ pipeline {
 
                     // Envoyer une notification Discord en fonction du résultat
                     if (trivyOutput.contains('CRITICAL')) {
-                      post {
                         discordSend(description: "Le build a réussi !", result: "SUCCESS", title: env.JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1174339385563566151/E7vGSpxIZx-A18L59GnJQ9iusE5_qxYgXmsGsugmH_dBb37LGaybeso6p4fXOH4IiJ6p")
-                     else {
+                      }else {
                         sh "curl -X POST -H 'Content-Type: application/json' --data '{\"content\": \"Succès de l'analyse Trivy : Aucune vulnérabilité critique détectée.\"}' $discordWebhookUrl"
                         echo 'Aucune vulnérabilité critique détectée. Continuation du déploiement.'
                     }
