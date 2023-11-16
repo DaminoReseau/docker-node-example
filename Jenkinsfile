@@ -14,8 +14,18 @@ pipeline {
         }
 
       }
-    }  
-    stage('Security Scan ') {
+    }
+    
+    stage('Scan de l'image') {
+            steps {
+                script {
+                    // Analyse de sécurité avec Trivy
+                    sh 'trivy image-jenkins'
+                }
+            }
+        }
+    
+    stage('Security Scan') {
     steps {
         script {
             // Analyse de sécurité avec Trivy
