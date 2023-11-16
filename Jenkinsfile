@@ -14,19 +14,30 @@ pipeline {
         }
 
       }
-    }  
+    }
     stage('Security Scan') {
-      steps {
-       def trivyOutput = sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image image-jenkins'
-        echo "Résultat de l'analyse Trivy :"
+            steps {
+                script {
+                    // Analyse de sécurité avec Trivy dans un conteneur Docker distinct
+                    def trivyOutput = sh(script: 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image image-jenkins', returnStdout: true).trim()
+
+                    // Sauvegarder la sortie de Trivy dans un fichier de log
+                    writeFile file: 'trivy_scan.log', text: trivyOutput
+
+                    // Afficher le résultat dans la console Jenkins
+                    echo "Résultat de l'analyse Trivy :"
                     echo trivyOutput
-        if (trivyOutput.contains('CRITICAL')) {
+
+                    // Éventuellement, ajouter une condition pour stopper le déploiement si des vulnérabilités critiques sont détectées
+                    if (trivyOutput.contains('CRITICAL')) {
                         error('Vulnérabilités critiques détectées. Arrêt du déploiement.')
                     } else {
                         echo 'Aucune vulnérabilité critique détectée.'
                     }
-      }
-    }
+                }
+            }
+        }
+    
 
   }
   post {
