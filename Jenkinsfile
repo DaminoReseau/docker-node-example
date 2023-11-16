@@ -14,16 +14,8 @@ pipeline {
         }
 
       }
-    }
-    stage('Security Scan') {
-    steps {
-        script {
-            // Exécution de Trivy à partir du conteneur Docker
-            sh 'docker run --rm -v $PWD:/work -w /work aquasec/trivy image-jenkins'
-        }
-    }
-}
-    stage('Security Scan') {
+    }  
+    stage('Security Scan ') {
     steps {
         script {
             // Analyse de sécurité avec Trivy
