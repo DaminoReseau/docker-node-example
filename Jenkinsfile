@@ -31,14 +31,13 @@ pipeline {
                 }
             }
         }
-    stage('Deploy with Docker Run') {
-            steps {
-                script {
-                    // Déploiement avec Docker Run
-                    sh 'docker run -d --name web-container -p 8000:80 --network jenkins image-jenkins'
-                }
-            }
+   stage('Run Docker Container') {
+    steps {
+        script {
+            sh './https://github.com/DaminoReseau/docker-node-example/run.sh'
         }
+    }
+}
         }
     
 
