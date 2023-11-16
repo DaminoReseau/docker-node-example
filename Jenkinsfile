@@ -19,7 +19,7 @@ ipipeline {
             steps {
                 script {
                     // Analyse de sécurité avec Trivy dans un conteneur Docker distinct
-                    def trivyOutput = sh(script: 'docker run --rm -v $PWD:/work -w /work aquasec/trivy image-jenkins', returnStdout: true).trim()
+                    def trivyOutput = sh(script: sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image image-jenkins', returnStdout: true).trim()
 
                     // Sauvegarder la sortie de Trivy dans un fichier de log
                     writeFile file: 'trivy_scan.log', text: trivyOutput
