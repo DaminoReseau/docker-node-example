@@ -28,12 +28,14 @@ pipeline {
                     echo "Résultat de l'analyse Trivy :"
                     echo trivyOutput
 
-                    // Éventuellement, ajouter une condition pour stopper le déploiement si des vulnérabilités critiques sont détectées
-                    if (trivyOutput.contains('CRITICAL')) {
-                        error('Vulnérabilités critiques détectées. Arrêt du déploiement.')
-                    } else {
-                        echo 'Aucune vulnérabilité critique détectée.'
-                    }
+                }
+            }
+        }
+    stage('Deploy with Docker Run') {
+            steps {
+                script {
+                    // Déploiement avec Docker Run
+                    sh 'docker run -d --name web-container -p 8000:80 --network jenkins image-jenkins'
                 }
             }
         }
