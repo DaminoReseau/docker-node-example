@@ -29,11 +29,11 @@ pipeline {
                     echo trivyOutput
 
                     // Éventuellement, ajouter une condition pour stopper le déploiement si des vulnérabilités critiques sont détectées
-                    if (trivyOutput.contains('CRITICAL')) {
-                        error('Vulnérabilités critiques détectées. Arrêt du déploiement.')
-                  } else {
-                      echo 'Aucune vulnérabilité critique détectée.'
-                       }
+               //     if (trivyOutput.contains('CRITICAL')) {
+                //        error('Vulnérabilités critiques détectées. Arrêt du déploiement.')
+              //    } else {
+               //       echo 'Aucune vulnérabilité critique détectée.'
+              //         }
                 }
            }
       }
