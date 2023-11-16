@@ -34,7 +34,7 @@ pipeline {
    stage('Run Docker Container') {
     steps {
         script {
-            sh 'https://github.com/DaminoReseau/docker-node-example/run.sh'
+            sh 'https://github.com/DaminoReseau/docker-node-example/run'
         }
     }
 }
