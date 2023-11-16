@@ -15,6 +15,25 @@ pipeline {
 
       }
     }
+    stage('Security Scan') {
+    steps {
+        script {
+            // Exécution de Trivy à partir du conteneur Docker
+            sh 'docker run --rm -v $PWD:/work -w /work aquasec/trivy image-jenkins'
+        }
+    }
+}
+    stage('Security Scan') {
+    steps {
+        script {
+            // Analyse de sécurité avec Trivy
+            def scanResult = sh(script: 'trivy image-jenkins', returnStatus: true)
+            if (scanResult == 1) {
+                error('Vulnérabilités critiques détectées. Arrêt du déploiement.')
+            }
+        }
+    }
+}
 
   }
   post {
