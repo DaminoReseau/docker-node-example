@@ -31,7 +31,16 @@ pipeline {
                 }
             }
         }
- stage('Run Docker Container') {
+  stages {
+        stage('Clone GitHub Repository') {
+            steps {
+                script {
+                    git 'https://github.com/DaminoReseau/docker-node-example.git'
+                }
+            }
+        }
+
+        stage('Run Docker Container') {
             steps {
                 script {
                     sh 'chmod +x run'  // Assurez-vous que le script est exécutable
