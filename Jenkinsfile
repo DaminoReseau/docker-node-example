@@ -16,11 +16,11 @@ pipeline {
       }
     }
     
-    stage('Scan de l'image') {
+    stage('Trivy image') {
             steps {
                 script {
                     // Analyse de sécurité avec Trivy
-                    sh 'trivy image-jenkins'
+                    sh 'trivy mon_image:latest'
                 }
             }
         }
