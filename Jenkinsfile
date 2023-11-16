@@ -7,22 +7,22 @@ pipeline {
       }
     }
 
-    stage('Image build') {
+    stage('Construire image Docker') {
       steps {
         script {
           docker.build('image-jenkins')
         }
 
       }
-    }
+    }  
     stage('Security Scan') {
-            steps {
-                script {
+           steps {
+               script {
                     // Analyse de sécurité avec Trivy dans un conteneur Docker distinct
-                    def trivyOutput = sh(script: 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image image-jenkins', returnStdout: true).trim()
+                   def trivyOutput = sh(script: 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image image-jenkins', returnStdout: true).trim()
 
                     // Sauvegarder la sortie de Trivy dans un fichier de log
-                    writeFile file: 'trivy_scan.log', text: trivyOutput
+                   writeFile file: 'trivy_scan.log', text: trivyOutput
 
                     // Afficher le résultat dans la console Jenkins
                     echo "Résultat de l'analyse Trivy :"
@@ -31,27 +31,31 @@ pipeline {
                     // Éventuellement, ajouter une condition pour stopper le déploiement si des vulnérabilités critiques sont détectées
                     if (trivyOutput.contains('CRITICAL')) {
                         error('Vulnérabilités critiques détectées. Arrêt du déploiement.')
-                    } else {
-                        echo 'Aucune vulnérabilité critique détectée.'
-                    }
+                  } else {
+                      echo 'Aucune vulnérabilité critique détectée.'
+                       }
                 }
+           }
+      }
+      stage('Deploy Image') {
+            steps {
+                script {
+                    sh 'docker run -d -p 8000:8000 image-jenkins'
+                  }
             }
-        }
-        }
-    
-
-  
+      }
+  }
   post {
     success {
       script {
-        discordSend(description: "Le build a réussi !", result: "SUCCESS", title: env.JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1174339385563566151/E7vGSpxIZx-A18L59GnJQ9iusE5_qxYgXmsGsugmH_dBb37LGaybeso6p4fXOH4IiJ6p")
+        discordSend(description: "Le build a reussi !", result: "SUCCESS", title: env.JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1174339385563566151/E7vGSpxIZx-A18L59GnJQ9iusE5_qxYgXmsGsugmH_dBb37LGaybeso6p4fXOH4IiJ6p")
       }
 
     }
 
     failure {
       script {
-        discordSend(description: "Le build a échoué.", result: "FAILURE", title: env.JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1174339385563566151/E7vGSpxIZx-A18L59GnJQ9iusE5_qxYgXmsGsugmH_dBb37LGaybeso6p4fXOH4IiJ6p")
+        discordSend(description: "Le build echoue.", result: "FAILURE", title: env.JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1174339385563566151/E7vGSpxIZx-A18L59GnJQ9iusE5_qxYgXmsGsugmH_dBb37LGaybeso6p4fXOH4IiJ6p")
       }
 
     }
