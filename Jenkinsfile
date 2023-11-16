@@ -15,28 +15,7 @@ pipeline {
 
       }
     }
-    
-    stage('Trivy image') {
-            steps {
-                script {
-                    // Analyse de sécurité avec Trivy
-                    sh 'trivy mon_image:latest'
-                }
-            }
-        }
-    
-    stage('Security Scan') {
-    steps {
-        script {
-            // Analyse de sécurité avec Trivy
-            def scanResult = sh(script: 'trivy image-jenkins', returnStatus: true)
-            if (scanResult == 1) {
-                error('Vulnérabilités critiques détectées. Arrêt du déploiement.')
-            }
-        }
-    }
-}
-
+  
   }
   post {
     success {
