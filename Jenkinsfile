@@ -17,7 +17,14 @@ pipeline {
     }  
     stage('Security Scan') {
       steps {
-        sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image image-jenkins'
+       def trivyOutput = sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image image-jenkins'
+        echo "Résultat de l'analyse Trivy :"
+                    echo trivyOutput
+        if (trivyOutput.contains('CRITICAL')) {
+                        error('Vulnérabilités critiques détectées. Arrêt du déploiement.')
+                    } else {
+                        echo 'Aucune vulnérabilité critique détectée.'
+                    }
       }
     }
 
