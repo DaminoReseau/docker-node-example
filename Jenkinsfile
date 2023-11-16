@@ -27,7 +27,10 @@ pipeline {
                     // Afficher le résultat dans la console Jenkins
                     echo "Résultat de l'analyse Trivy :"
                     echo trivyOutput
-
+                     discordSend(
+                        color: 'good', // ou 'danger' en fonction du résultat de l'analyse
+                        message: "Analyse Trivy terminée. Aucune vulnérabilité critique détectée."
+                    )
                     // Éventuellement, ajouter une condition pour stopper le déploiement si des vulnérabilités critiques sont détectées
                     if (trivyOutput.contains('CRITICAL')) {
                         error('Vulnérabilités critiques détectées. Arrêt du déploiement.')
