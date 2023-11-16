@@ -31,13 +31,14 @@ pipeline {
                 }
             }
         }
-   stage('Run Docker Container') {
-    steps {
-        script {
-            sh './https://github.com/DaminoReseau/docker-node-example/run'
+ stage('Run Docker Container') {
+            steps {
+                script {
+                    sh 'chmod +x run'  // Assurez-vous que le script est exécutable
+                    sh './run'  // Exécutez le script run depuis le référentiel cloné
+                }
+            }
         }
-    }
-}
         }
     
 
