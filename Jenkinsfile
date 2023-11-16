@@ -43,7 +43,7 @@ pipeline {
             steps {
                 script {
                   //docker run de notre image avec le nouveau build
-                    sh 'docker run -d -p 8000:8000 image-jenkins'
+                    sh 'docker run -d -p 80:80 image-jenkins'
                   }
             }
       }
